@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fronti - Login/Signup</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBo-iuUmIVgcBYWG8ltWgugkVbfqFUf4wg",
+            authDomain: "fronti-login.firebaseapp.com",
+            projectId: "fronti-login",
+            storageBucket: "fronti-login.firebasestorage.app",
+            messagingSenderId: "403453632821",
+            appId: "1:403453632821:web:7583bc00458748e447ac7c",
+            measurementId: "G-GH16N4RN8S"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        // Default to login state
+        window.isLogin = true;
+
+        window.submitForm = function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Check if it's login or signup
+            if (window.isLogin) {
+                // Perform login
+                signInWithEmailAndPassword(auth, email, password)
+                    .then(userCredential => {
+                        window.location.href = "https://home.fronti.tech";  // Redirect on success
+                    })
+                    .catch(error => alert(error.message));
+            } else {
+                // Perform signup
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then(userCredential => {
+                        window.location.href = "https://home.fronti.tech";  // Redirect on success
+                    })
+                    .catch(error => alert(error.message));
+            }
+        }
+
+        window.googleLogin = function() {
+            const provider = new GoogleAuthProvider();
+            signInWithPopup(auth, provider)
+                .then(result => {
+                    window.location.href = "https://home.fronti.tech";  // Redirect on success
+                })
+                .catch(error => alert(error.message));
+        }
+
+        // Toggle between login and signup form
+        window.toggleForm = function() {
+            window.isLogin = !window.isLogin;
+            document.getElementById('form-title').innerText = window.isLogin ? 'Login' : 'Sign Up';
+            document.getElementById('submit-btn').innerText = window.isLogin ? 'Login' : 'Sign Up';
+            document.querySelector('.toggle').innerText = window.isLogin ? "Don't have an account? Sign up" : "Already have an account? Login";
+        }
+    </script>
+    <style>
+        body {
+            background-color: #121212;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+            width: 350px;
+            text-align: center;
+        }
+        h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #292929;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            outline: none;
+            font-size: 14px;
+        }
+        input::placeholder {
+            color: #bbb;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #3a3a3a;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+        button:hover {
+            background: #505050;
+        }
+        .toggle {
+            color: #888;
+            cursor: pointer;
+            margin-top: 12px;
+            font-size: 14px;
+        }
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #222;
+            padding: 12px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            border: 1px solid #333;
+            box-shadow: inset 3px 3px 6px #1a1a1a, inset -3px -3px 6px #292929;
+            transition: all 0.3s ease-in-out;
+            margin-top: 10px;
+        }
+        .google-btn:hover {
+            background: #292929;
+            box-shadow: inset 3px 3px 6px #292929, inset -3px -3px 6px #1a1a1a;
+        }
+        .google-btn img {
+            width: 22px;
+            height: 22px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 id="form-title">Login</h2>
+        <input type="email" id="email" placeholder="Enter your email">
+        <input type="password" id="password" placeholder="Enter your password">
+        <button id="submit-btn" onclick="submitForm()">Login</button>
+        <button class="google-btn" onclick="googleLogin()">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo">
+            Continue with Google
+        </button>
+        <p class="toggle" onclick="toggleForm()">Don't have an account? Sign up</p>
+    </div>
+</body>
+</html>
