@@ -592,18 +592,15 @@
 
     // Auth state change listener
     onAuthStateChanged(auth, (user) => {
+      // Do not redirect here, just update lastLogin if needed
       if (user) {
-        // User is signed in, get UID
         const uid = user.uid;
-        // Example: Save last login or fetch user data
         import("https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js").then(({ getDatabase, ref, set }) => {
           const db = getDatabase();
           set(ref(db, `/users/${uid}/lastLogin`), Date.now());
         });
-      } else {
-        // Not logged in, redirect to login
-        window.location.href = "https://auth.fronti.tech";
       }
+      // No redirect here!
     });
     </script>
 </body>
