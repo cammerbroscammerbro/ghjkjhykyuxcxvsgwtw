@@ -398,7 +398,7 @@
     <script type="module">
     // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
     import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
     // Your Firebase config
@@ -535,7 +535,7 @@
                     email: email
                 });
                 // Redirect to home
-                window.location.href = "https://home.fronti.tech";
+                window.location.href = "https://main.fronti.tech";
             } catch (err) {
                 if (err.code === "auth/email-already-in-use") {
                     showError("Email already taken");
@@ -549,7 +549,7 @@
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 // Redirect to home
-                window.location.href = "https://home.fronti.tech";
+                window.location.href = "https://main.fronti.tech";
             } catch (err) {
                 if (err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
                     showError("Incorrect password");
@@ -574,7 +574,7 @@
                 });
             }
             // Redirect to home
-            window.location.href = "https://home.fronti.tech";
+            window.location.href = "https://main.fronti.tech";
         } catch (err) {
             showError(err.message.replace("Firebase: ", ""));
         }
@@ -589,7 +589,22 @@
         setToLogin();
       }
     });
+
+    // Auth state change listener
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, get UID
+        const uid = user.uid;
+        // Example: Save last login or fetch user data
+        import("https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js").then(({ getDatabase, ref, set }) => {
+          const db = getDatabase();
+          set(ref(db, `/users/${uid}/lastLogin`), Date.now());
+        });
+      } else {
+        // Not logged in, redirect to login
+        window.location.href = "https://auth.fronti.tech";
+      }
+    });
     </script>
 </body>
 </html>
-
