@@ -535,7 +535,7 @@
                     email: email
                 });
                 // Redirect to home
-                window.location.href = "https://main.fronti.tech";
+                window.location.href = "https://home.fronti.tech";
             } catch (err) {
                 if (err.code === "auth/email-already-in-use") {
                     showError("Email already taken");
@@ -549,7 +549,7 @@
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 // Redirect to home
-                window.location.href = "https://main.fronti.tech";
+                window.location.href = "https://home.fronti.tech";
             } catch (err) {
                 if (err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
                     showError("Incorrect password");
@@ -574,7 +574,7 @@
                 });
             }
             // Redirect to home
-            window.location.href = "https://main.fronti.tech";
+            window.location.href = "https://home.fronti.tech";
         } catch (err) {
             showError(err.message.replace("Firebase: ", ""));
         }
