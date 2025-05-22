@@ -406,7 +406,7 @@
     <script type="module">
     // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
     import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
     // Your Firebase config
@@ -424,8 +424,6 @@
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    // Set persistence to local to help with cross-subdomain login
-    setPersistence(auth, browserLocalPersistence);
     const db = getDatabase(app);
 
     // Floating app elements animation
