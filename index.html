@@ -387,6 +387,13 @@
                 <i class="fas fa-lock"></i>
             </div>
             <div id="error-message" style="color:#f87171; text-align:center; margin-bottom:1rem; display:none;"></div>
+            <div style="margin-bottom:1.2rem; display:flex; align-items:center; font-size:0.97rem;">
+                <input type="checkbox" id="policy-check" style="margin-right:8px;">
+                <label for="policy-check" style="color:var(--text-secondary);">
+                    I have read and agree to the
+                    <a href="policy.html" target="_blank" style="color:var(--primary); text-decoration:underline; cursor:pointer;">Privacy Policy & Terms</a>
+                </label>
+            </div>
             <button type="submit" class="secondary-btn">
                 <i class="fas fa-sign-in-alt"></i>
                 Launch Builder
@@ -407,7 +414,7 @@
     // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+    import { getDatabase, ref, set, get, push } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
     // Your Firebase config
     const firebaseConfig = {
@@ -478,6 +485,7 @@
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const errorMessage = document.getElementById('error-message');
+    const policyCheck = document.getElementById('policy-check');
 
     let isSignup = false;
 
@@ -526,6 +534,10 @@
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         clearError();
+        if (!policyCheck.checked) {
+            showError("You must agree to the Privacy Policy & Terms.");
+            return;
+        }
         if (isSignup) {
             const name = nameInput.value.trim();
             const email = emailInput.value.trim();
@@ -542,8 +554,18 @@
                     name: name,
                     email: email
                 });
-                // Redirect to home
-                window.location.href = "https://home.fronti.tech";
+                // Check pay status and redirect accordingly
+                const userRef = ref(db, 'users/' + userCredential.user.uid);
+                const snap = await get(userRef);
+                // If user node doesn't exist, create it
+                if (!snap.exists()) {
+                    await set(userRef, { name, email });
+                }
+                if (snap.exists() && snap.val().pay === true) {
+                    window.location.href = "main.html";
+                } else {
+                    window.location.href = "pay.html";
+                }
             } catch (err) {
                 if (err.code === "auth/email-already-in-use") {
                     showError("Email already taken");
@@ -556,8 +578,19 @@
             const password = passwordInput.value;
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                // Redirect to home
-                window.location.href = "https://home.fronti.tech";
+                // Check pay status and redirect accordingly
+                const userRef = ref(db, 'users/' + userCredential.user.uid);
+                let snap = await get(userRef);
+                // If user node doesn't exist, create it
+                if (!snap.exists()) {
+                    await set(userRef, { email });
+                    snap = await get(userRef);
+                }
+                if (snap.exists() && snap.val().pay === true) {
+                    window.location.href = "main.html";
+                } else {
+                    window.location.href = "pay.html";
+                }
             } catch (err) {
                 if (err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
                     showError("Incorrect password");
