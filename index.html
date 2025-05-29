@@ -556,7 +556,7 @@
                     pay: false
                 });
                 // Redirect to pay.html for new users
-                window.location.href = "pay.html";
+                window.location.href = "https://pay.fronti.tech";
             } catch (err) {
                 if (err.code === "auth/email-already-in-use") {
                     showError("Email already taken");
@@ -574,14 +574,14 @@
                 // If user node doesn't exist, create it with pay: false and redirect to pay.html
                 if (!snap.exists()) {
                     await set(userRef, { email, pay: false });
-                    window.location.href = "pay.html";
+                    window.location.href = "https://pay.fronti.tech";
                     return;
                 }
                 // If pay is true, redirect to home, else to pay.html
                 if (snap.val().pay === true) {
                     window.location.href = "https://home.fronti.tech";
                 } else {
-                    window.location.href = "pay.html";
+                    window.location.href = "https://pay.fronti.tech";
                 }
             } catch (err) {
                 if (err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
@@ -608,14 +608,14 @@
                     email: result.user.email,
                     pay: false
                 });
-                window.location.href = "pay.html";
+                window.location.href = "https://pay.fronti.tech";
                 return;
             }
             // If pay is true, go to home, else pay.html
             if (snap.val().pay === true) {
                 window.location.href = "https://home.fronti.tech";
             } else {
-                window.location.href = "pay.html";
+                window.location.href = "https://pay.fronti.tech";
             }
         } catch (err) {
             showError(err.message.replace("Firebase: ", ""));
