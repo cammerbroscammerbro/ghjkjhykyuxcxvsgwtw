@@ -608,15 +608,24 @@
         const provider = new GoogleAuthProvider();
         try {
             const result = await signInWithPopup(auth, provider);
-            // Save user to database if new
-            if (result._tokenResponse && result._tokenResponse.isNewUser) {
-                await set(ref(db, 'users/' + result.user.uid), {
+            const userRef = ref(db, 'users/' + result.user.uid);
+            let snap = await get(userRef);
+            // If user node doesn't exist, create it
+            if (!snap.exists()) {
+                await set(userRef, {
                     name: result.user.displayName,
                     email: result.user.email
                 });
+                // After creating, redirect to pay.html
+                window.location.href = "pay.html";
+                return;
             }
-            // Redirect to home
-            window.location.href = "https://home.fronti.tech";
+            // If pay is true, go to main.html, else pay.html
+            if (snap.val().pay === true) {
+                window.location.href = "main.html";
+            } else {
+                window.location.href = "pay.html";
+            }
         } catch (err) {
             showError(err.message.replace("Firebase: ", ""));
         }
