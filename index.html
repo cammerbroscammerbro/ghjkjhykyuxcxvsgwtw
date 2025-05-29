@@ -581,12 +581,13 @@
                 // Check pay status and redirect accordingly
                 const userRef = ref(db, 'users/' + userCredential.user.uid);
                 let snap = await get(userRef);
-                // If user node doesn't exist, create it
+                // If user node doesn't exist, create it and redirect to pay.html
                 if (!snap.exists()) {
                     await set(userRef, { email });
-                    snap = await get(userRef);
+                    window.location.href = "pay.html";
+                    return;
                 }
-                if (snap.exists() && snap.val().pay === true) {
+                if (snap.val().pay === true) {
                     window.location.href = "main.html";
                 } else {
                     window.location.href = "pay.html";
